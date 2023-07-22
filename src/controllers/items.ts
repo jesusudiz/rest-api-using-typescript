@@ -1,35 +1,44 @@
-import { Request, Response } from "express";
+import express, { Request, Response } from "express";
 import { handleHttp } from "../utils/error.handle";
+import { insertCar, getCars, getCar,updateCar } from "../services/item";
 
-const getItem = (req: Request, res: Response) => {
+const getItem = async (req: Request, res: Response) => {
   try {
+    const { id } = req.params;
+    const response = await getCar(id);
+    res.status(200).json(response);
   } catch (err) {
-    handleHttp(res,"Error get Item");
+    handleHttp(res, "Error get Item");
   }
 };
-const getItems = (req: Request, res: Response) => {
+const getItems = async (req: Request, res: Response) => {
   try {
+    const response = await getCars();
+    res.status(200).json(response);
   } catch (err) {
-    handleHttp(res,"Error get Items");
+    handleHttp(res, "Error get Items");
   }
 };
-const postItem = async (req: Request, res: Response) => {
+const postItem = async ({ body }: Request, res: Response) => {
   try {
-    const responseItem = await insertItem(req.body);
-  } catch (err) {
-    handleHttp(res,"Error post Item");
+    const responseItem = await insertCar(body);
+    res.status(201).json(responseItem);
+  } catch (err:any) {
+    handleHttp(res,err.message);
   }
 };
-const updateItem = (req: Request, res: Response) => {
+const updateItem = async ({ params: { id }, body }: Request, res: Response) => {
   try {
+    const responseItem = await updateCar(id, body);
+    res.status(200).json(responseItem);
   } catch (err) {
-    handleHttp(res,"Error update Item");
+    handleHttp(res, "Error update Item");
   }
 };
 const deleteItem = (req: Request, res: Response) => {
   try {
   } catch (err) {
-    handleHttp(res,"Error delete Item");
+    handleHttp(res, "Error delete Item");
   }
 };
 

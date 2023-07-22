@@ -1,28 +1,22 @@
-import {Router,Request, Response} from "express";
-import {readdirSync} from "fs";
-
-
+import { Router, Request, Response } from "express";
+import { readdirSync } from "fs";
 
 const Path_ROUTER = `${__dirname}`;
 const router = Router();
 
 const cleanFileName = (fileName: string) => {
-const file = fileName.split(".").shift();
-return file;
+  const file = fileName.split(".").shift();
+  return file;
 };
 
-
-readdirSync(Path_ROUTER).filter((fileName)=>{
-   const cleanName = cleanFileName(fileName);
-   if(cleanName !=="index"){
-    import(`./${cleanName}`).then((moduleRouter)=>{
-    console.log(`se esta cargando la ruta ....${moduleRouter}`)
-        router.use(`/${cleanName}`,moduleRouter);
+readdirSync(Path_ROUTER).forEach((fileName) => {
+  const cleanName = cleanFileName(fileName);
+  if (cleanName !== "index") {
+    import(`./${cleanName}`).then((moduleRouter) => {
+      console.log(`Se está cargando la ruta .... ${cleanName}`);
+      router.use(`/${cleanName}`, moduleRouter.router);
     });
-   }
+  }
 });
 
-console.log(Path_ROUTER);
-
-
-export { router};
+export { router };
